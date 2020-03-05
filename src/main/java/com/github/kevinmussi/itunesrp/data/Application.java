@@ -1,7 +1,7 @@
 package com.github.kevinmussi.itunesrp.data;
 
 public enum Application {
-    ITUNES("iTunes", "itunes-logo"),
+    ITUNES("Apple Music", "itunes-logo"),
     SPOTIFY("Spotify", "spotify-logo");
     
     private final String description;

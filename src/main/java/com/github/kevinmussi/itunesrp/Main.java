@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
-
 import com.github.kevinmussi.itunesrp.core.DiscordHelper;
 import com.github.kevinmussi.itunesrp.core.ScriptDiscordBridge;
 import com.github.kevinmussi.itunesrp.core.ScriptHelper;
 import com.github.kevinmussi.itunesrp.data.OperativeSystem;
-import com.github.kevinmussi.itunesrp.view.MainFrame;
-import com.github.kevinmussi.itunesrp.view.View;
 
 public final class Main {
 	
@@ -24,7 +20,7 @@ public final class Main {
 		super();
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		LOGGER.log(Level.INFO, "Application started running.");
 		
 		// Get the OperativeSystem object
@@ -63,11 +59,8 @@ public final class Main {
 		// about the songs playing (in form of a String object).
 		scriptHelper.addObserver(bridge);
 		
-		// Create the View (GUI/CLI element).
-		View view = new MainFrame();
-		
 		// Create the DiscordHelper passing the MainFrame to it
-		DiscordHelper discordHelper = new DiscordHelper(view);
+		DiscordHelper discordHelper = new DiscordHelper();
 		
 		// The Discord helper observes the bridge to receive updates
 		// about the songs playing (in form of a Track object).
@@ -76,11 +69,11 @@ public final class Main {
 		// The script helper observes the Discord helper to be notified
 		// when the script must be executed or stopped.
 		discordHelper.setCommanded(scriptHelper);
-		
-		// Show the frame
-		SwingUtilities.invokeLater(view::init);
-		
-		LOGGER.log(Level.INFO, "View invoked.");
+
+		Runtime.getRuntime().addShutdownHook(new Thread(discordHelper::disconnect));
+
+		discordHelper.connect();
+
 	}
 	
 }
